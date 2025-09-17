@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM BREACH DETECTED</title>
+    <style>
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+        }
+        #terminal {
+            flex-grow: 1;
+            font-size: 16px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #0f0;
+            background: rgba(0, 15, 0, 0.8);
+            box-shadow: 0 0 10px #0f0;
+        }
+        .glitch {
+            animation: glitch 0.3s infinite alternate;
+        }
+        .blink {
+            animation: blink 0.7s step-end infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+            60% { transform: translate(-2px, 0); }
+            80% { transform: translate(2px, 2px); }
+            100% { transform: translate(0); }
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal"></div>
+    <script>
+        const terminal = document.getElementById('terminal');
+        const messages = [
+            "Initializing breach protocol... [SUCCESS]",
+            "Bypassing firewall defenses... [SUCCESS]",
+            "BREACHING SYSTEM CORE... [SUCCESS]",
+            "Decrypting security keys... [SUCCESS]",
+            "Accessing C:/Users/Data... [SUCCESS]",
+            "Extracting files from user directory...",
+            "passwords.txt",
+            "usernames.csv",
+            "documents.docx",
+            "images/photo1.jpg",
+            "ALERT: UNAUTHORIZED ACCESS DETECTED",
+            "WARNING: SYSTEM INTEGRITY COMPROMISED [SUCCESS]",
+            "Copying sensitive_files.txt...",
+            "Extracting user_credentials.db... [SUCCESS]",
+            "CRITICAL DATA EXPOSED... [SUCCESS]",
+            "Uploading malicious payload to C:/System/Core...",
+            "Rewriting system logs... [SUCCESS]",
+            "Erasing hard drive... "
+        ];
+        const jargon = [
+            "0xFF29A3", "SYN/ACK flood", "SQL injection", "Rootkit deployed",
+            "Brute-forcing SSH", "Packet sniffing", "Exploit CVE-2025-1337",
+            "Backdoor established", "Hashcat running", "Tor routing active",
+            "DDoS vector initialized", "Keylogger active"
+        ];
+
+        // Audio for realism (simple beep)
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBeep() {
+            const oscillator = ctx.createOscillator();
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(440, ctx.currentTime);
+            oscillator.connect(ctx.destination);
+            oscillator.start();
+            oscillator.stop(ctx.currentTime + 0.1);
+        }
+
+        // Typing effect for plain text
+        async function typeMessage(text, speed = 50) {
+            for (let char of text) {
+                terminal.innerHTML += char;
+                terminal.scrollTop = terminal.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, speed + Math.random() * 30));
+            }
+            terminal.innerHTML += '\n';
+        }
+
+        // Typing effect for HTML content (e.g., blinking text)
+        async function typeHtmlMessage(htmlText, speed = 50) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlText;
+            terminal.appendChild(tempDiv);
+            terminal.scrollTop = terminal.scrollHeight;
+            await new Promise(resolve => setTimeout(resolve, speed));
+            terminal.innerHTML += '\n';
+        }
+
+        // Simulate fast progress for messages with percentages
+        async function fastProgress(message, steps = 3) {
+            await typeMessage(message);
+            for (let i = 0; i < steps; i++) {
+                const percent = Math.round((i + 1) * 30); // Quick jumps: 30%, 60%, 90%
+                await typeMessage(`${percent}%`);
+                playBeep();
+                await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 200)); // Fast: 0.2-0.4s
+            }
+            await typeMessage("[SUCCESS]");
+        }
+
+        // Long erase simulation: 5 minutes total, updates every ~20s with random increasing %
+        async function longErase() {
+            let currentPercent = 0;
+            const totalDuration = 300000; // 5 minutes in ms
+            const numUpdates = 15; // Roughly every 20s
+            const baseInterval = totalDuration / numUpdates;
+            await typeMessage("Erasing hard drive...");
+
+            for (let i = 0; i < numUpdates; i++) {
+                const increment = 5 + Math.random() * 10; // Random 5-15% increase
+                currentPercent = Math.min(99, Math.round(currentPercent + increment)); // Cap at 99%
+                const interval = baseInterval + (Math.random() - 0.5) * 10000; // +/- 5s
+                await typeMessage(`${currentPercent}%`);
+                playBeep();
+                if (i < numUpdates - 1) {
+                    await new Promise(resolve => setTimeout(resolve, interval));
+                }
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await typeMessage("device infiltrated, error<securly> overridden, files sent to IP--.----.---.--- <black.sun.4xtnet>", [complete]);
+        }
+
+        // Main animation loop
+        async function runHackAnimation() {
+            terminal.innerHTML = '<span class="glitch">[CRITICAL SYSTEM BREACH DETECTED]</span>\n';
+            playBeep();
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            // Fast early messages
+            for (let i = 0; i < 4; i++) {
+                await typeMessage(messages[i]);
+                if (Math.random() > 0.3) {
+                    await typeMessage(`[${jargon[Math.floor(Math.random() * jargon.length)]}]`);
+                    playBeep();
+                }
+                await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 400)); // Fast: 0.2-0.6s
+            }
+
+            // File extraction
+            await typeMessage(messages[4]); // Accessing C:/Users/Data
+            await new Promise(resolve => setTimeout(resolve, 400));
+            await typeMessage(messages[5]); // Extracting files...
+            await new Promise(resolve => setTimeout(resolve, 300));
+
+            // List files quickly
+            for (let i = 6; i <= 9; i++) {
+                await typeMessage(messages[i]);
+                await new Promise(resolve => setTimeout(resolve, 150));
+                playBeep();
+            }
+
+            // Post-images alert with blinking
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await typeHtmlMessage('<span class="blink">ALERT: UNAUTHORIZED ACCESS DETECTED</span>');
+            playBeep();
+            playBeep();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Mid messages with fast progress or direct success
+            await typeMessage(messages[11]); // WARNING: SYSTEM INTEGRITY
+            await new Promise(resolve => setTimeout(resolve, 300));
+            playBeep();
+            await fastProgress(messages[12]); // Copying sensitive_files.txt
+            await new Promise(resolve => setTimeout(resolve, 300));
+            await typeMessage(messages[13]); // Extracting user_credentials.db
+            await new Promise(resolve => setTimeout(resolve, 300));
+            playBeep();
+            await typeMessage(messages[14]); // CRITICAL DATA EXPOSED
+            await new Promise(resolve => setTimeout(resolve, 300));
+            await fastProgress(messages[15]); // Uploading payload
+            await new Promise(resolve => setTimeout(resolve, 300));
+            await typeMessage(messages[16]); // Rewriting system logs
+            await new Promise(resolve => setTimeout(resolve, 300));
+            playBeep();
+
+            // Long erase
+            await longErase();
+
+            // Final message with scary jargon
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            terminal.innerHTML += '<span class="blink">OPERATION FINISHED: SYSTEM FULLY COMPROMISED. DATA EXFILTRATED TO DARKNET.</span>\n';
+            playBeep();
+        }
+
+        // Start animation
+        runHackAnimation();
+    </script>
+</body>
+</html>
