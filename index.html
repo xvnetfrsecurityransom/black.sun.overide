@@ -1,0 +1,318 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM BREACH DETECTED</title>
+    <style>
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+        }
+        #terminal {
+            flex-grow: 1;
+            font-size: 16px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #0f0;
+            background: rgba(0, 15, 0, 0.8);
+            box-shadow: 0 0 10px #0f0;
+        }
+        .glitch {
+            animation: glitch 0.3s infinite alternate;
+        }
+        .blink {
+            animation: blink 0.7s step-end infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+            60% { transform: translate(-2px, 0); }
+            80% { transform: translate(2px, 2px); }
+            100% { transform: translate(0); }
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal"></div>
+    <script>
+        const terminal = document.getElementById('terminal');
+        const messages = [
+            `
+    ╔════════════════════════════╗
+    ║   BLACK SUN HACKER GROUP   ║
+    ║   BREACH PROTOCOL v2.3.7   ║
+    ╚════════════════════════════╝
+            `,
+            "Initializing breach protocol... [SUCCESS]",
+            "Bypassing firewall defenses... [SUCCESS]",
+            "BREACHING SYSTEM CORE... [SUCCESS]",
+            "Decrypting security keys... [SUCCESS]",
+            "Accessing C:/Users/Data... [SUCCESS]",
+            "Extracting files from user directory...",
+            "passwords.txt",
+            "usernames.csv",
+            "documents.docx",
+            "images/photo1.jpg",
+            "ALERT: UNAUTHORIZED ACCESS DETECTED",
+            "WARNING: SYSTEM INTEGRITY COMPROMISED [SUCCESS]",
+            "Copying sensitive_files.txt...",
+            "Extracting user_credentials.db... [SUCCESS]",
+            "CRITICAL DATA EXPOSED... [SUCCESS]",
+            "Uploading malicious payload to C:/System/Core...",
+            "Rewriting system logs... [SUCCESS]",
+            "Erasing hard drive... "
+        ];
+        const jargon = [
+            "0xFF29A3", "SYN/ACK flood", "SQL injection", "Rootkit deployed",
+            "Brute-forcing SSH", "Packet sniffing", "Exploit CVE-2025-1337",
+            "Backdoor established", "Hashcat running", "Tor routing active",
+            "DDoS vector initialized", "Keylogger active"
+        ];
+
+        // Audio for realism with varied beeps
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBeep(type = 'default') {
+            const oscillator = ctx.createOscillator();
+            oscillator.type = 'square';
+            const settings = {
+                'default': { frequency: 440, duration: 0.1 },
+                'alert': { frequency: 880, duration: 0.2 },
+                'progress': { frequency: 220, duration: 0.05 }
+            };
+            const { frequency, duration } = settings[type] || settings['default'];
+            oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
+            oscillator.connect(ctx.destination);
+            oscillator.start();
+            oscillator.stop(ctx.currentTime + duration);
+        }
+
+        // Typing effect for plain text
+        async function typeMessage(text, speed = 50) {
+            for (let char of text) {
+                terminal.innerHTML += char;
+                terminal.scrollTop = terminal.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, speed + Math.random() * 30));
+            }
+            terminal.innerHTML += '\n';
+        }
+
+        // Typing effect for HTML content (e.g., blinking text)
+        async function typeHtmlMessage(htmlText, speed = 50) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlText;
+            terminal.appendChild(tempDiv);
+            terminal.scrollTop = terminal.scrollHeight;
+            await new Promise(resolve => setTimeout(resolve, speed));
+            terminal.innerHTML += '\n';
+        }
+
+        // Simulated command typing with realistic cursor
+        async function typeCommand(command, speed = 50) {
+            const prompt = 'root@blacksun:~$ ';
+            // Create a container for the prompt and command
+            const commandContainer = document.createElement('div');
+            commandContainer.innerHTML = prompt;
+            terminal.appendChild(commandContainer);
+            terminal.scrollTop = terminal.scrollHeight;
+            await new Promise(resolve => setTimeout(resolve, 20));
+
+            // Type command with blinking cursor
+            let currentCommand = '';
+            const commandSpan = document.createElement('span');
+            const cursorSpan = document.createElement('span');
+            cursorSpan.className = 'blink';
+            cursorSpan.innerHTML = '|';
+            commandContainer.appendChild(commandSpan);
+            commandContainer.appendChild(cursorSpan);
+
+            for (let char of command) {
+                currentCommand += char;
+                commandSpan.innerHTML = currentCommand;
+                terminal.scrollTop = terminal.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, speed + Math.random() * 50)); // 50-100ms per char
+            }
+            // Remove cursor after typing
+            cursorSpan.remove();
+            terminal.innerHTML += '\n';
+        }
+
+        // Simulate fast progress for messages with percentages
+        async function fastProgress(message, steps = 3) {
+            await typeMessage(message);
+            for (let i = 0; i < steps; i++) {
+                const percent = Math.round((i + 1) * 30); // Quick jumps: 30%, 60%, 90%
+                await typeMessage(`${percent}%`);
+                playBeep('progress'); // Low-pitched for progress
+                await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 200));
+            }
+            await typeMessage("[SUCCESS]");
+        }
+
+        // Randomized glitch effect for critical moments
+        async function addGlitchEffect() {
+            const glitchChars = ['#', '@', '%', '!', '*', '█'];
+            const original = terminal.innerHTML;
+            const flashCount = 3 + Math.floor(Math.random() * 3); // 3-5 flashes
+            for (let i = 0; i < flashCount; i++) {
+                const glitchLength = 5 + Math.floor(Math.random() * 10); // 5-15 chars
+                const glitchText = glitchChars[Math.floor(Math.random() * glitchChars.length)].repeat(glitchLength);
+                terminal.innerHTML = original + '<span class="glitch">' + glitchText + '</span>';
+                await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200)); // 100-300ms
+            }
+            terminal.innerHTML = original;
+        }
+
+        // Long erase simulation: 5 minutes total, stops at 99%
+        async function longErase() {
+            let currentPercent = 0;
+            const totalDuration = 300000; // 5 minutes in ms
+            const numUpdates = 15; // Roughly every 20s
+            const baseInterval = totalDuration / numUpdates;
+            await typeMessage("Erasing hard drive...");
+
+            for (let i = 0; i < numUpdates; i++) {
+                const increment = 5 + Math.random() * 10; // Random 5-15% increase
+                currentPercent = Math.round(currentPercent + increment);
+                if (currentPercent >= 99) {
+                    currentPercent = 99; // Set to 99 and stop
+                    await typeMessage(`${currentPercent}%`);
+                    playBeep('progress'); // Low-pitched for erase progress
+                    break; // Exit loop once 99% is reached
+                }
+                await typeMessage(`${currentPercent}%`);
+                playBeep('progress'); // Low-pitched for erase progress
+                await new Promise(resolve => setTimeout(resolve, baseInterval + (Math.random() - 0.5) * 10000));
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await typeMessage("device infiltrated, error<securly> overridden, files sent to IP--.----.---.--- <black.sun.4xtnet>");
+        }
+
+        // Main animation loop
+        async function runHackAnimation() {
+            // Display ASCII art and initial command
+            await typeMessage(messages[0], 10); // Fast typing for ASCII art
+            await typeCommand('./initiate_breach.sh'); // Hacker initiates breach
+            await new Promise(resolve => setTimeout(resolve, 300));
+            terminal.innerHTML += '<span class="glitch">[CRITICAL SYSTEM BREACH DETECTED]</span>\n';
+            playBeep('alert'); // High-pitched for critical start
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            // Fast early messages
+            for (let i = 1; i < 5; i++) {
+                await typeMessage(messages[i]);
+                if (i === 3) await addGlitchEffect(); // Glitch after BREACHING SYSTEM CORE
+                if (Math.random() > 0.3) {
+                    await typeMessage(`[${jargon[Math.floor(Math.random() * jargon.length)]}]`);
+                    playBeep('default');
+                }
+                await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 400));
+            }
+
+            // File extraction with glitch effect
+            await typeMessage(messages[5]); // Accessing C:/Users/Data
+            await new Promise(resolve => setTimeout(resolve, 400));
+            await typeMessage(messages[6]); // Extracting files...
+            await new Promise(resolve => setTimeout(resolve, 300));
+            await addGlitchEffect(); // Glitch during file extraction
+
+            // List files quickly
+            for (let i = 7; i <= 10; i++) {
+                await typeMessage(messages[i]);
+                await new Promise(resolve => setTimeout(resolve, 150));
+                playBeep('default');
+            }
+
+            // Post-images alert with glitch and blinking
+            await new Promise(resolve => setTimeout(resolve, 500));
+            await typeHtmlMessage('<span class="blink">ALERT: UNAUTHORIZED ACCESS DETECTED</span>');
+            await addGlitchEffect(); // Glitch during alert
+            playBeep('alert'); // High-pitched for alert
+            playBeep('alert');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Mid messages with fast progress or direct success
+            await typeMessage(messages[12]); // WARNING: SYSTEM INTEGRITY
+            await new Promise(resolve => setTimeout(resolve, 300));
+            playBeep('default');
+            await fastProgress(messages[13]); // Copying sensitive_files.txt
+            await new Promise(resolve => setTimeout(resolve, 300));
+            await typeMessage(messages[14]); // Extracting user_credentials.db
+            await new Promise(resolve => setTimeout(resolve, 300));
+            playBeep('default');
+            await typeMessage(messages[15]); // CRITICAL DATA EXPOSED
+            await addGlitchEffect(); // Glitch after CRITICAL DATA EXPOSED
+            await new Promise(resolve => setTimeout(resolve, 300));
+            await fastProgress(messages[16]); // Uploading payload
+            await new Promise(resolve => setTimeout(resolve, 300));
+            await typeMessage(messages[17]); // Rewriting system logs
+            await new Promise(resolve => setTimeout(resolve, 300));
+            playBeep('default');
+
+            // Long erase
+            await longErase();
+
+            // Final message with scary jargon
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            terminal.innerHTML += '<span class="blink">OPERATION FINISHED: SYSTEM FULLY COMPROMISED. DATA EXFILTRATED TO DARKNET.</span>\n';
+            playBeep('alert'); // High-pitched for final message
+        }
+
+        // Start animation
+        runHackAnimation();
+    </script>
+</body>
+</html>
