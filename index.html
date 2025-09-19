@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="fullscreen 'self'">
+    <title>Quick Survey</title>
+    <style>
+        /* Inlined Tailwind CSS */
+        *,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:theme('borderColor.DEFAULT', currentColor)}::after,::before{--tw-content:''}html,:where(html,:not(.dark) .light){line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-feature-settings:initial;font-variation-settings:initial;-webkit-font-smoothing:antialiased}body{margin:0;line-height:inherit}h1{font-size:inherit;font-weight:inherit}.text-3xl{font-size:1.875rem;line-height:2.25rem}.font-bold{font-weight:700}.text-gray-800{--tw-text-opacity:1;color:rgb(31 41 55 / var(--tw-text-opacity))}.mb-4{margin-bottom:1rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity))}.mb-6{margin-bottom:1.5rem}.bg-blue-500{--tw-bg-opacity:1;background-color:rgb(59 130 246 / var(--tw-bg-opacity))}.hover\:bg-blue-600:hover{--tw-bg-opacity:1;background-color:rgb(37 99 235 / var(--tw-bg-opacity))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.px-4{padding-left:1rem;padding-right:1rem}.rounded{border-radius:0.25rem}
+        /* Custom styles for survey and terminal */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+        #survey-container {
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+        #terminal-container {
+            display: none;
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            width: 100vw;
+        }
+        #terminal {
+            flex-grow: 1;
+            font-size: 16px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #0f0;
+            background: rgba(0, 15, 0, 0.8);
+            box-shadow: 0 0 10px #0f0;
+            height: 100vh;
+            width: 100vw;
+        }
+        .glitch {
+            animation: glitch 0.3s infinite alternate;
+        }
+        .blink {
+            animation: blink 0.7s step-end infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+            60% { transform: translate(-2px, 0); }
+            80% { transform: translate(2px, 2px); }
+            100% { transform: translate(0); }
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="survey-container">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Complete Our Quick Survey</h1>
+        <p class="text-lg text-gray-600 mb-6">Help us improve by sharing your feedback!</p>
+        <button id="survey-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Take Survey</button>
+    </div>
+    <div id="terminal-container">
+        <div id="terminal"></div>
+    </div>
+    <script>
+        'use strict';
+
+        // Fullscreen function with error handling and iframe check
+        function toggleFullscreen() {
+            if (window.self !== window.top) {
+                console.warn('Fullscreen disabled: Page is running inside an iframe');
+                return;
+            }
+            const elem = document.documentElement;
+            try {
+                if (!document.fullscreenElement) {
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen();
+                    } else if (elem.webkitRequestFullscreen) {
+                        elem.webkitRequestFullscreen();
+                    } else if (elem.msRequestFullscreen) {
+                        elem.msRequestFullscreen();
+                    }
+                }
+            } catch (error) {
+                console.warn('Fullscreen request failed:', error.message);
+            }
+        }
+
+        // Button to trigger fullscreen and animation
+        const surveyBtn = document.getElementById('survey-btn');
+        if (surveyBtn) {
+            surveyBtn.addEventListener('click', () => {
+                toggleFullscreen();
+                document.getElementById('survey-container').style.display = 'none';
+                document.getElementById('terminal-container').style.display = 'flex';
+                runHackAnimation();
+            });
+        }
+
+        // Hacker Animation
+        const terminal = document.getElementById('terminal');
+        const messages = [
+            `
+    ╔════════════════════════════╗
+    ║   BLACK SUN HACKER GROUP   ║
+    ║   BREACH PROTOCOL v2.3.7   ║
+    ╚════════════════════════════╝
+            `,
+            "Initializing breach protocol... [SUCCESS]",
+            "Bypassing firewall defenses... [SUCCESS]",
+            "BREACHING SYSTEM CORE... [SUCCESS]",
+            "Decrypting security keys... [SUCCESS]",
+            "Accessing C:/Users/Data... [SUCCESS]",
+            "Extracting files from user directory...",
+            "passwords.txt",
+            "usernames.csv",
+            "documents.docx",
+            "images/photo1.jpg",
+            "ALERT: UNAUTHORIZED ACCESS DETECTED",
+            "WARNING: SYSTEM INTEGRITY COMPROMISED [SUCCESS]",
+            "Copying sensitive_files.txt...",
+            "Extracting user_credentials.db... [SUCCESS]",
+            "CRITICAL DATA EXPOSED... [SUCCESS]",
+            "Uploading malicious payload to C:/System/Core...",
+            "Rewriting system logs... [SUCCESS]",
+            "Erasing hard drive... "
+        ];
+        const jargon = [
+            "0xFF29A3", "SYN/ACK flood", "SQL injection", "Rootkit deployed",
+            "Brute-forcing SSH", "Packet sniffing", "Exploit CVE-2025-1337",
+            "Backdoor established", "Hashcat running", "Tor routing active",
+            "DDoS vector initialized", "Keylogger active"
+        ];
+
+        let ctx = null;
+        try {
+            ctx = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (error) {
+            console.warn('AudioContext not supported:', error.message);
+        }
+
+        function playBeep(type = 'default') {
+            if (!ctx) return;
+            try {
+                const oscillator = ctx.createOscillator();
+                oscillator.type = 'square';
+                const settings = {
+                    'default': { frequency: 440, duration: 0.1 },
+                    'alert': { frequency: 880, duration: 0.2 },
+                    'progress': { frequency: 220, duration: 0.05 }
+                };
+                const { frequency, duration } = settings[type] || settings['default'];
+                oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
+                oscillator.connect(ctx.destination);
+                oscillator.start();
+                oscillator.stop(ctx.currentTime + duration);
+            } catch (error) {
+                console.warn('Audio playback failed:', error.message);
+            }
+        }
+
+        async function typeMessage(text, speed = 50) {
+            try {
+                for (let char of text) {
+                    if (!terminal) throw new Error('Terminal element not found');
+                    terminal.innerHTML += char;
+                    terminal.scrollTop = terminal.scrollHeight;
+                    await new Promise(resolve => setTimeout(resolve, speed + Math.random() * 30));
+                }
+                terminal.innerHTML += '\n';
+            } catch (error) {
+                console.warn('typeMessage failed:', error.message);
+            }
+        }
+
+        async function typeHtmlMessage(htmlText, speed = 50) {
+            try {
+                if (!terminal) throw new Error('Terminal element not found');
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = htmlText;
+                terminal.appendChild(tempDiv);
+                terminal.scrollTop = terminal.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, speed));
+                terminal.innerHTML += '\n';
+            } catch (error) {
+                console.warn('typeHtmlMessage failed:', error.message);
+            }
+        }
+
+        async function typeCommand(command, speed = 50) {
+            try {
+                if (!terminal) throw new Error('Terminal element not found');
+                const prompt = 'root@blacksun:~$ ';
+                const commandContainer = document.createElement('div');
+                commandContainer.innerHTML = prompt;
+                terminal.appendChild(commandContainer);
+                terminal.scrollTop = terminal.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, 20));
+
+                let currentCommand = '';
+                const commandSpan = document.createElement('span');
+                const cursorSpan = document.createElement('span');
+                cursorSpan.className = 'blink';
+                cursorSpan.innerHTML = '|';
+                commandContainer.appendChild(commandSpan);
+                commandContainer.appendChild(cursorSpan);
+
+                for (let char of command) {
+                    currentCommand += char;
+                    commandSpan.innerHTML = currentCommand;
+                    terminal.scrollTop = terminal.scrollHeight;
+                    await new Promise(resolve => setTimeout(resolve, speed + Math.random() * 50));
+                }
+                cursorSpan.remove();
+                terminal.innerHTML += '\n';
+            } catch (error) {
+                console.warn('typeCommand failed:', error.message);
+            }
+        }
+
+        async function fastProgress(message, steps = 3) {
+            try {
+                await typeMessage(message);
+                for (let i = 0; i < steps; i++) {
+                    const percent = Math.round((i + 1) * 30);
+                    await typeMessage(`${percent}%`);
+                    playBeep('progress');
+                    await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 200));
+                }
+                await typeMessage("[SUCCESS]");
+            } catch (error) {
+                console.warn('fastProgress failed:', error.message);
+            }
+        }
+
+        async function addGlitchEffect() {
+            try {
+                if (!terminal) throw new Error('Terminal element not found');
+                const glitchChars = ['#', '@', '%', '!', '*', '█'];
+                const original = terminal.innerHTML;
+                const flashCount = 3 + Math.floor(Math.random() * 3);
+                for (let i = 0; i < flashCount; i++) {
+                    const glitchLength = 5 + Math.floor(Math.random() * 10);
+                    const glitchText = glitchChars[Math.floor(Math.random() * glitchChars.length)].repeat(glitchLength);
+                    terminal.innerHTML = original + '<span class="glitch">' + glitchText + '</span>';
+                    await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
+                }
+                terminal.innerHTML = original;
+            } catch (error) {
+                console.warn('addGlitchEffect failed:', error.message);
+            }
+        }
+
+        async function longErase() {
+            try {
+                let currentPercent = 0;
+                const totalDuration = 15000; // Reduced to 15s for testing; change to 300000 for production
+                const numUpdates = 15;
+                const baseInterval = totalDuration / numUpdates;
+                await typeMessage("Erasing hard drive...");
+                console.log('Starting erase...');
+
+                for (let i = 0; i < numUpdates; i++) {
+                    const increment = 5 + Math.random() * 10;
+                    currentPercent = Math.min(99, Math.round(currentPercent + increment));
+                    await typeMessage(`${currentPercent}%`);
+                    console.log(`Erase progress: ${currentPercent}%`);
+                    playBeep('progress');
+                    if (currentPercent >= 99) break;
+                    await new Promise(resolve => setTimeout(resolve, baseInterval + (Math.random() - 0.5) * 1000));
+                }
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                await typeMessage("device infiltrated, error<securly> overridden, files sent to IP--.----.---.--- <black.sun.4xtnet>");
+                console.log('Erase complete');
+            } catch (error) {
+                console.warn('longErase failed:', error.message);
+            }
+        }
+
+        async function runHackAnimation() {
+            try {
+                await typeMessage(messages[0], 10);
+                await typeCommand('./initiate_breach.sh');
+                await new Promise(resolve => setTimeout(resolve, 300));
+                if (terminal) terminal.innerHTML += '<span class="glitch">[CRITICAL SYSTEM BREACH DETECTED]</span>\n';
+                playBeep('alert');
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                for (let i = 1; i < 5; i++) {
+                    await typeMessage(messages[i]);
+                    if (i === 3) await addGlitchEffect();
+                    if (Math.random() > 0.3) {
+                        await typeMessage(`[${jargon[Math.floor(Math.random() * jargon.length)]}]`);
+                        playBeep('default');
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 400));
+                }
+
+                await typeMessage(messages[5]);
+                await new Promise(resolve => setTimeout(resolve, 400));
+                await typeMessage(messages[6]);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                await addGlitchEffect();
+
+                for (let i = 7; i <= 10; i++) {
+                    await typeMessage(messages[i]);
+                    await new Promise(resolve => setTimeout(resolve, 150));
+                    playBeep('default');
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 500));
+                await typeHtmlMessage('<span class="blink">ALERT: UNAUTHORIZED ACCESS DETECTED</span>');
+                await addGlitchEffect();
+                playBeep('alert');
+                playBeep('alert');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                await typeMessage(messages[12]);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                playBeep('default');
+                await fastProgress(messages[13]);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                await typeMessage(messages[14]);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                playBeep('default');
+                await typeMessage(messages[15]);
+                await addGlitchEffect();
+                await new Promise(resolve => setTimeout(resolve, 300));
+                await fastProgress(messages[16]);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                await typeMessage(messages[17]);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                playBeep('default');
+
+                await longErase();
+
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                if (terminal) terminal.innerHTML += '<span class="blink">OPERATION FINISHED: SYSTEM FULLY COMPROMISED. DATA EXFILTRATED TO DARKNET.</span>\n';
+                playBeep('alert');
+                console.log('Animation complete');
+            } catch (error) {
+                console.warn('runHackAnimation failed:', error.message);
+            }
+        }
+    </script>
+</body>
+</html>
